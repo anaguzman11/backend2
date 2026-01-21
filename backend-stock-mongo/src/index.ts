@@ -4,6 +4,7 @@ import "dotenv/config";
 
 import { connectDB } from "./config/database";
 import authRoutes from "./routes/auth.routes";
+import categoriesRoutes from "./routes/categories.routes";
 import { authenticate, authorize } from "./middlewares/auth.middleware";
 
 const app = express();
@@ -44,6 +45,7 @@ app.get("/admin", authenticate, authorize(["admin"]), (req, res) => {
 app.get("/api/saludo", (req: Request, res: Response) => {
   res.json({ mensaje: "Hola desde la API 🚀" });
 });
+app.use("/api/categoria", categoriesRoutes);
 
 // Conectar a MongoDB
 connectDB().then(() => {
