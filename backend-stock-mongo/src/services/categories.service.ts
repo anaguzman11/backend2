@@ -1,32 +1,34 @@
-//maneja toda la logica
+// Manage Logic for Categories
 
 import { ICategory } from "../types/categories";
 import { Category } from "../models/categories.model";
 
-//fields:
-//id
-//name
-//description
-//createdAt
-//updateAt
-
-const getAllCategory = async (): Promise<ICategory[]> => {
-  //logica para obtener las categorias
-  await Category.find(); //trae todas las categorias de la BD
+export const getAllCategory = async (): Promise<ICategory[]> => {
+  return await Category.find(); // trae todas las categorías de la base de datos
 };
 
-const getCategoryById = () => {
-  //logica para obtener una categoria por ID
+export const getCategoryById = async (
+  id: string,
+): Promise<ICategory | null> => {
+  return await Category.findById(id);
 };
 
-const createCategory = () => {
-  // Logica pra crear una nueva categoria
+export const createCategory = async (data: ICategory): Promise<ICategory> => {
+  const newCategory = new Category(data);
+  return await newCategory.save();
 };
 
-const updateCategory = () => {
-  // logica para actualizar una categoria
+export const updateCategory = async (
+  id: string,
+  data: ICategory,
+): Promise<ICategory | null> => {
+  const category = Category.findByIdAndUpdate(id, data, {
+    new: true, // para que me devuelva el objeto actualizado
+  }); // si mongo no encuentra un doc con ese id, devuelve null
+
+  return category;
 };
 
-const removeCategory = () => {
-  //logica para eliminar una categoria
+export const removeCategory = async (id: string): Promise<ICategory | null> => {
+  return await Category.findByIdAndDelete(id);
 };
