@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import * as userModel from "../models/user.model";
+import * as userModel from "../models/users.model";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { JwtPayload, UserRole } from "../types/auth";
 
@@ -37,16 +37,29 @@ export const login = async (
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) throw invalidCredentialsError;
 
+  /**
+   * Payload del token JWT
+   * Contiene la información básica del usuario
+   */
   const payload: JwtPayload = {
     id: user.id,
     username: user.username,
     role: user.role as UserRole,
   };
 
+  /**
+   * Configuración del token JWT
+   * expiresIn: tiempo de expiración
+   * issuer: emisor del token
+   */
   const options: SignOptions = {
     expiresIn: (process.env.JWT_EXPIRES_IN as any) || "1h",
     issuer: "curso-utn-backend",
   };
 
+  /**
+   * Generación del token JWT
+   * Se firma el payload con el secreto y las opciones definidas
+   */
   return jwt.sign(payload, secretKey, options);
 };

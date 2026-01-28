@@ -41,7 +41,7 @@ export const getProductById = async (req: Request, res: Response) => {
     console.log("getProductById");
     console.log(req.params);
 
-    const product = await productService.getProductById(id);
+    const product = await productService.getProductById(id as string);
 
     if (!product) {
       return res.status(404).json({ error: "Producto no encontrado" });
@@ -65,7 +65,10 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const productData: IProduct = req.body;
 
-    const product = await productService.updateProduct(id, productData);
+    const product = await productService.updateProduct(
+      id as string,
+      productData,
+    );
 
     if (!product) {
       return res.status(404).json({ error: "Producto no encontrado" });
@@ -85,7 +88,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
   try {
     console.log("deleteProduct");
 
-    const product = await productService.deleteProduct(id);
+    const product = await productService.deleteProduct(id as string);
 
     if (!product) {
       return res.status(404).json({ error: "Producto no encontrado" });

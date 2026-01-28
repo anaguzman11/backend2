@@ -2,10 +2,15 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 import { ICategory } from "../types/categories";
 
 // Definición del esquema
-const categorySchema: Schema<ICategory> = new Schema(
+const categorySchema = new Schema<ICategory>(
   {
-    name: { type: String, required: true, unique: true },
-    description: { type: String },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true, // el trim elimina espacios al inicio y al final
+    },
+    description: { type: String, trim: true },
   },
   { timestamps: true },
 );

@@ -25,7 +25,7 @@ export const registerValidator: ValidationChain[] = [
   ...validatePassword,
   body("username")
     .isLength({ min: 3 })
-    .withMessage("Username must be at least 3 characters long")
+    .withMessage("Username debe tener al menos 3 caracteres")
     .matches(/^[a-zA-Z0-9_]+$/)
     .withMessage(
       "Username solo puede contener letras, números y guiones bajos",

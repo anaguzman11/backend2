@@ -27,20 +27,14 @@ const userSchema = new Schema<IUser>(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Por favor ingresa un email válido"],
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: 8,
-    },
+    password: { type: String, required: true, minlength: 8 },
     role: {
       type: String,
       enum: Object.values(UserRole),
       default: "user",
     } as any,
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
 userSchema.index({ email: 1 });
@@ -48,7 +42,6 @@ userSchema.index({ username: 1 });
 
 export const User = mongoose.model<IUser>("User", userSchema);
 
-// Funciones del modelo (equivalente a MySQL)
 export interface UserData {
   id: string;
   username: string;
@@ -61,10 +54,7 @@ export const findUser = async (
   email: string = "",
   username: string = "",
 ): Promise<UserData | null> => {
-  const user = await User.findOne({
-    $or: [{ email }, { username }],
-  });
-
+  const user = await User.findOne({ $or: [{ email }, { username }] }).lean();
   if (!user) return null;
 
   return {
@@ -83,9 +73,8 @@ export const createUser = async (
     username: user.username,
     email: user.email,
     password: user.password,
-    role: "user", // Rol por defecto
+    role: "user",
   });
-
-  const savedUser = await newUser.save();
-  return savedUser._id.toString();
+  const saved = await newUser.save();
+  return saved._id.toString();
 };

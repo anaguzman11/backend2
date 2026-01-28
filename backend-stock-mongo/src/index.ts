@@ -1,11 +1,12 @@
 import express, { Request, Response } from "express";
 import path from "path";
-import "dotenv/config";
 
-import { connectDB } from "./config/database";
+import "dotenv/config";
 import authRoutes from "./routes/auth.routes";
 import categoriesRoutes from "./routes/categories.routes";
+import productsRoutes from "./routes/product.routes";
 import { authenticate, authorize } from "./middlewares/auth.middleware";
+import { connectDB } from "./config/database";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,21 +17,17 @@ app.use(express.json());
 // Middleware para servir archivos estáticos desde la carpeta "public"
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// Rutas de autenticación
 app.use("/auth", authRoutes);
 
-// Ruta pública
 app.get("/public", (req: Request, res: Response) => {
   res.json({
     message: "Cualquiera puede entrar!",
   });
 });
 
-// Ruta protegida (requiere autenticación)
 app.get("/protected", authenticate, (req, res) => {
   res.json({
     message: "Acceso permitido",
-    user: req.user,
   });
 });
 
@@ -38,18 +35,18 @@ app.get("/protected", authenticate, (req, res) => {
 app.get("/admin", authenticate, authorize(["admin"]), (req, res) => {
   res.json({
     message: "Acceso de administrador permitido",
-    user: req.user,
   });
 });
 
 app.get("/api/saludo", (req: Request, res: Response) => {
   res.json({ mensaje: "Hola desde la API 🚀" });
 });
-app.use("/api/categoria", categoriesRoutes);
 
-// Conectar a MongoDB
+app.use("/api/categoria", categoriesRoutes);
+app.use("/api/producto", productsRoutes);
+
+// Conectar a MongoDB y luego iniciar el servidor HTTP
 connectDB().then(() => {
-  // Iniciar el servidor HTTP
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT} 🚀`);
   });

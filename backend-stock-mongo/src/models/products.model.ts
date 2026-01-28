@@ -1,4 +1,3 @@
-import { populate } from "dotenv";
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProduct extends Document {
@@ -30,7 +29,3 @@ productSchema.index({ name: 1 });
 productSchema.index({ categoryId: 1 });
 
 export const Product = mongoose.model<IProduct>("Product", productSchema);
-
-// al momento de usar el modelo Product en otros archivos,
-// puedo usar el populate para traer los datos de la categoría asociada a cada producto, por ejemplo:
-// Product.find().populate('categoryId', 'name');

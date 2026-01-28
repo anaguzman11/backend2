@@ -1,17 +1,39 @@
 import { Router } from "express";
-import * as categoriesController from "../controllers/categories.controllers";
+import * as categoriesController from "../controllers/categories.controller";
+import {
+  createCategoryValidator,
+  updateCategoryValidator,
+} from "../validators/category.validator";
+import { authenticate, authorize } from "../middlewares/auth.middleware";
+import validateDto from "../middlewares/dto.middleware";
 
 const router: Router = Router();
 
-// getAll ()
 router.get("/", categoriesController.getAll);
-
-//getById ()
 router.get("/:id", categoriesController.getById);
 
-//create (), update(), delete ()
-router.post("/", categoriesController.create);
-router.put("/:id", categoriesController.update);
-router.delete("/:id", categoriesController.remove);
+router.post(
+  "/",
+  authenticate,
+  authorize(["admin"]),
+  createCategoryValidator,
+  validateDto,
+  categoriesController.create,
+);
+
+router.put(
+  "/:id",
+  authenticate,
+  authorize(["admin"]),
+  updateCategoryValidator,
+  validateDto,
+  categoriesController.update,
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize(["admin"]),
+  categoriesController.remove,
+);
 
 export default router;
